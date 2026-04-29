@@ -2,6 +2,7 @@ name: postgres-master-slave
 services:
   postgresql-master:
     image: bitnami/postgresql:latest
+    shm_size: '1gb'
     environment:
       - POSTGRESQL_REPLICATION_MODE=master
       - POSTGRESQL_REPLICATION_USER=repl_user
@@ -11,9 +12,12 @@ services:
       - POSTGRESQL_DATABASE=my_database
     ports:
       - "5432:5432"
+    volumes:
+      - ./data/master:/bitnami/postgresql
 
   postgresql-slave:
     image: bitnami/postgresql:latest
+    shm_size: '1gb'
     depends_on:
       - postgresql-master
     environment:
@@ -23,9 +27,13 @@ services:
       - POSTGRESQL_REPLICATION_USER=repl_user
       - POSTGRESQL_REPLICATION_PASSWORD=repl_password
       - POSTGRESQL_PASSWORD=my_password
+      - POSTGRESQL_MAX_CONNECTIONS=350
+    volumes:
+      - ./data/slave1:/bitnami/postgresql
 
   postgresql-slave2:
     image: bitnami/postgresql:latest
+    shm_size: '1gb'
     depends_on:
       - postgresql-master
     environment:
@@ -35,9 +43,13 @@ services:
       - POSTGRESQL_REPLICATION_USER=repl_user
       - POSTGRESQL_REPLICATION_PASSWORD=repl_password
       - POSTGRESQL_PASSWORD=my_password
+      - POSTGRESQL_MAX_CONNECTIONS=350
+    volumes:
+      - ./data/slave2:/bitnami/postgresql
 
   postgresql-slave3:
     image: bitnami/postgresql:latest
+    shm_size: '1gb'
     depends_on:
       - postgresql-master
     environment:
@@ -47,9 +59,13 @@ services:
       - POSTGRESQL_REPLICATION_USER=repl_user
       - POSTGRESQL_REPLICATION_PASSWORD=repl_password
       - POSTGRESQL_PASSWORD=my_password
+      - POSTGRESQL_MAX_CONNECTIONS=350
+    volumes:
+      - ./data/slave3:/bitnami/postgresql
 
   postgresql-slave4:
     image: bitnami/postgresql:latest
+    shm_size: '1gb'
     depends_on:
       - postgresql-master
     environment:
@@ -59,6 +75,9 @@ services:
       - POSTGRESQL_REPLICATION_USER=repl_user
       - POSTGRESQL_REPLICATION_PASSWORD=repl_password
       - POSTGRESQL_PASSWORD=my_password
+      - POSTGRESQL_MAX_CONNECTIONS=350
+    volumes:
+      - ./data/slave4:/bitnami/postgresql
 
   haproxy:
     image: haproxy:latest
@@ -84,3 +103,21 @@ services:
       - "9090:80"
     depends_on:
       - postgresql-master
+    volumes:
+      - ./data/pgadmin:/var/lib/pgadmin
+  rabbitmq:
+    image: rabbitmq:4-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - ./data/rabbitmq:/var/lib/rabbitmq
+
+  redis:
+    image: redis:trixie
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data/redis:/var/lib/redis
