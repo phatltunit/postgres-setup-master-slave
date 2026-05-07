@@ -161,3 +161,21 @@ services:
       
       exit 0;
       "
+
+  jod-converter:
+    image: ghcr.io/jodconverter/jodconverter-examples:rest
+    ports:
+      - "8090:8080"
+
+  app:
+    build: D:/.LT/spring-jpa/.
+    ports:
+      - "8088:8088"
+    depends_on:
+      - jod-converter
+      - postgresql-master
+    environment:
+      MINIO_ACCESS_KEY: admin
+      MINIO_SECRET_KEY: admin@123
+    volumes:
+      - ./2024-1101-PII.docx:/tmp/test/2024-1101-PII.docx
