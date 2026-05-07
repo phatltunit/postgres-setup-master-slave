@@ -177,5 +177,3 @@ services:
     environment:
       MINIO_ACCESS_KEY: admin
       MINIO_SECRET_KEY: admin@123
-    volumes:
-      - ./2024-1101-PII.docx:/tmp/test/2024-1101-PII.docx
