@@ -177,3 +177,8 @@ services:
     environment:
       MINIO_ACCESS_KEY: admin
       MINIO_SECRET_KEY: admin@123
+
+  gotenberg:
+    image: gotenberg/gotenberg:8-libreoffice
+    ports:
+      - "3000:3000"
