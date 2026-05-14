@@ -176,12 +176,19 @@ services:
     build: D:/.LT/spring-jpa/.
     ports:
       - "8088:8088"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 350M
     depends_on:
       - jod-converter
       - postgresql-master
     environment:
       MINIO_ACCESS_KEY: admin
       MINIO_SECRET_KEY: admin@123
+      JAVA_OPTS: "-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0"
 
   gotenberg:
     image: gotenberg/gotenberg:8-libreoffice
